@@ -12,22 +12,24 @@ App = React.createClass({
         },
     
         getGif: function(searchingText) {
-            return new Promise ((resolve, reject) => {
+            return new Promise(function(resolve, reject) {
                 var url = GIPHY_API_URL + '/v1/gifs/random?api_key=' + GIPHY_PUB_KEY + '&tag=' + searchingText;
                 var xhr = new XMLHttpRequest();
                 xhr.open('GET', url);
-                xhr.onload = function () {
-                    if (xhr.status === 200) {
+                xhr.onload = function() {
+                    if(xhr.status === 200) {
                         var data = JSON.parse(xhr.responseText).data;
                         var gif = {
                             url: data.fixed_width_downsampled_url,
                             sourceUrl: data.url
                         };
                         resolve(gif);
+                    } else {
+                        reject(new Error('Something went wrong'));
                     }
-                };
+                }
                 xhr.send();
-            })
+            });
         },
     
         handleSearch: function(searchingText) {  // 1.
