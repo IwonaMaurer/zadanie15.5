@@ -1,5 +1,5 @@
-var GIPHY_API_URL = '';
-var GIPHY_PUB_KEY = '';
+var GIPHY_API_URL = 'https://api.giphy.com',
+GIPHY_PUB_KEY = '9af6d92a7b0d48a4812c800105edda24';
 
 App = React.createClass({
     
@@ -10,39 +10,42 @@ App = React.createClass({
                 gif: {}
             };
         },
-    
-        getGif: function(searchingText) {
-            return new Promise(function(resolve, reject) {
-                var url = GIPHY_API_URL + '/v1/gifs/random?api_key=' + GIPHY_PUB_KEY + '&tag=' + searchingText;
-                var xhr = new XMLHttpRequest();
-                xhr.open('GET', url);
-                xhr.onload = function() {
-                    if(xhr.status === 200) {
-                        var data = JSON.parse(xhr.responseText).data;
-                        var gif = {
-                            url: data.fixed_width_downsampled_url,
-                            sourceUrl: data.url
-                        };
-                        resolve(gif);
-                    } else {
-                        reject(new Error('Something went wrong'));
-                    }
-                }
-                xhr.send();
-            });
-        },
-    
-        handleSearch: function(searchingText) {  // 1.
+
+       
+
+           fetch(GIPHY_API_URL)
+           .then(status)  
+           .then(parseJson)  
+           .then(function(gif) { 
+            var url = GIPHY_API_URL + '/v1/gifs/random?api_key=' + GIPHY_PUB_KEY + '&tag=' + searchingText;
+            var data = JSON.parse(xhr.responseText).data;
+            var gif = {
+                url: data.fixed_width_downsampled_url,
+                sourceUrl: data.url
+            };                
+               console.log('Odpowiedź JSON', gif);  
+           }).catch(function(error) {  
+               console.log('Żądanie nie powiodło się', error);  
+           });
+
+   
+           handleSearch: function(searchingText) {
             this.setState({
-              loading: true  // 2.
+              loading: true
             });
-            this.getGif(searchingText, function(gif) {  // 3.
-              this.setState({  // 4
-                loading: false,  // a
-                gif: gif,  // b
-                searchingText: searchingText  // c
-              });
-            }.bind(this));
+        
+              var self = this
+              
+           this.getGif(searchingText)
+            .then {
+                self.setState({ 
+                    loading: false,
+                    gif: {
+                        url: gif.image_url
+                    },  
+                    searchingText: searchingText 
+                    })			
+            };
           },
     
     
@@ -70,7 +73,19 @@ App = React.createClass({
         }
     });
     
+ /*
+        getGif: function(searchingText) {
+            return      fetch url
+          
+                var url = GIPHY_API_URL + '/v1/gifs/random?api_key=' + GIPHY_PUB_KEY + '&tag=' + searchingText;
 
+                        var data = JSON.parse(xhr.responseText).data;
+                        var gif = {
+                            url: data.fixed_width_downsampled_url,
+                            sourceUrl: data.url
+                        };
+          
+    */
 
 
 
